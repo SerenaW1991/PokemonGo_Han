@@ -4,6 +4,10 @@ import random
 import database
 from item import *
 from pokemon import *
+import requests
+
+GEOAPI_KEY = "8c257b0d354b21b37d61a632a30ed495"
+GOOGLEMAP_KEY = ""
 
 def validated(password_str):
     
@@ -234,7 +238,56 @@ class Player(object):
 
 
     def visit_pokestop(self):
-        pass                   
+        print ("currently you are at ")
+        request_str="http://api.ipstack.com/check?access_key="+ GEOAPI_KEY
+        response=requests.get(request_str)
+        ip=response.json()['ip']
+        latitude=response.json()['latitude']
+        longitude=response.json()['longitude']
+
+        print("Your current location associated with your IP "+ ip +" is")
+        print("latitude:",latitude)
+        print("longitude:",longitude)
+
+        randGift = random.randint(1,5)
+        print ("You have " + str(len(self.pokemons_in_hand)) +" pokemons in hand")
+        print ("Here are " + str(randGift) + " free pokemons for you for you!")
+
+        for i in range(1, randGift+1):
+            aRandPokemon = database.get_pokemon()
+            # aRandPokemon = aRandPokemon.split("\n")[0][0:-2]
+            # print (aRandPokemon)
+            # aRandPokemon = generate_pokemon_by_name(aRandPokemon)
+            self.pokemons_in_hand.append(aRandPokemon)
+
+        print ("Cong!  Now you have " + str(len(self.pokemons_in_hand)) +" pokemons in hand")
+
+        # map_api_str="https://maps.googleapis.com/maps/api/place/nearbysearch/"
+        # return_type="json"
+        # location_str="location="+str(latitude)+","+str(longitude)
+        # radius=500
+        # radius_str="radius="+str(radius)
+        # api_key="you need to enter your own API key here"
+        # key_str="key="+api_key
+        #
+        # request_str=map_api_str+return_type+"?"+location_str+"&"+radius_str+"&"+key_str
+        # print(request_str)
+        # #Getting response
+        # response=requests.get(request_str)
+        # num_of_stops=len(response.json()['results'])
+        # if(num_of_stops>0):
+        #     print("Select a place to visit:\n")
+        #     for i in range(num_of_stops):
+        #         print(i+1,":",response.json()['results'][i]['name'])
+        #     user_selection=int(input())
+        #     location=response.json()['results'][user_selection-1]
+        #
+        #     print("You are visiting",location['name'])
+        # else:
+        #     print("There's something wrong with entered location! Please Try again!\n")
+
+
+
     
     def list_pokemons_in_hand(self):
         i=1
